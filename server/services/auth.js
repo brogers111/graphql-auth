@@ -60,7 +60,6 @@ function signup({ email, password, req }) {
       });
     });
 }
-
 function login({ email, password, req }) {
   return new Promise((resolve, reject) => {
     passport.authenticate("local", (err, user) => {
