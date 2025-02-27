@@ -1,8 +1,24 @@
-# auth-graphql-starter
+# GraphQL Authentication App
 
-Starter project from a GraphQL course on Udemy.com - Section 3!
+## Description
 
-### Setup
+A simple authentication application that uses GraphQL, Passport, Mongoose, and bcrypt for signup, login, and logout functionality/user data storage with a React frontend compiled with Webpack.
 
-- Run `npm install --legacy-peer-deps` in the root of the project to install dependencies
-- Access the application at `localhost:4000` in your browser
+## Tech Stack
+
+- JavaScript
+- React
+- GraphQL
+- MongoDB
+- Passport
+- bcrypt
+- Webpack
+
+## Deployment
+
+Feel free to view the completed project by clicking the link here.
+
+## Future Improvements
+
+- Build out logged in pages/components
+- Reset & change password functionality
