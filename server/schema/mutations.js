@@ -20,8 +20,12 @@ const mutation = new GraphQLObjectType({
       type: UserType,
       resolve(parentValue, args, req) {
         const { user } = req;
-        req.logout();
-        return user;
+        return new Promise((resolve, reject) => {
+          req.logout((err) => {
+            if (err) reject(err);
+            resolve(user);
+          });
+        });
       },
     },
     login: {
