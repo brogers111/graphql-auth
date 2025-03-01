@@ -8,11 +8,13 @@ A simple authentication application that uses GraphQL, Passport, Mongoose, and b
 
 - JavaScript
 - React
+- Apollo Client
 - GraphQL
 - MongoDB
 - Passport
 - bcrypt
 - Webpack
+- MaterialUI
 
 ## Deployment
 
