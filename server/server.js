@@ -26,13 +26,16 @@ mongoose
 
 app.use(
   session({
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     secret: "aaabbbccc",
     store: MongoStore.create({
       mongoUrl: MONGO_URI,
-      autoReconnect: true,
+      mongoOptions: { useUnifiedTopology: true },
     }),
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24,
+    },
   })
 );
 

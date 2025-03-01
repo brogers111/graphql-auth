@@ -20,12 +20,8 @@ const mutation = new GraphQLObjectType({
       type: UserType,
       resolve(parentValue, args, req) {
         const { user } = req;
-        return new Promise((resolve, reject) => {
-          req.logout((err) => {
-            if (err) reject(err);
-            resolve(user);
-          });
-        });
+        req.logout();
+        return user;
       },
     },
     login: {
@@ -35,7 +31,16 @@ const mutation = new GraphQLObjectType({
         password: { type: GraphQLString },
       },
       resolve(parentValue, { email, password }, req) {
-        return AuthService.login({ email, password, req });
+        console.log("Attempting login:", email);
+        return AuthService.login({ email, password, req })
+          .then((user) => {
+            console.log("Login successful:", user);
+            return user;
+          })
+          .catch((err) => {
+            console.error("Login failed:", err);
+            throw new Error(err);
+          });
       },
     },
   },

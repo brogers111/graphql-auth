@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
@@ -15,25 +16,29 @@ passport.deserializeUser((id, done) => {
 });
 
 passport.use(
-  new LocalStrategy({ usernameField: "email" }, (email, password, done) => {
-    User.findOne({ email: email.toLowerCase() }, (err, user) => {
-      if (err) {
-        return done(err);
-      }
+  new LocalStrategy(
+    { usernameField: "email" },
+    async (email, password, done) => {
+      console.log(`Authenticating: ${email}`);
+
+      const user = await User.findOne({ email });
+
       if (!user) {
-        return done(null, false, "Invalid Credentials");
+        console.log("User not found.");
+        return done(null, false, { message: "Invalid credentials." });
       }
-      user.comparePassword(password, (err, isMatch) => {
-        if (err) {
-          return done(err);
-        }
-        if (isMatch) {
-          return done(null, user);
-        }
-        return done(null, false, "Invalid credentials.");
-      });
-    });
-  })
+
+      const isMatch = await bcrypt.compare(password, user.password);
+
+      if (!isMatch) {
+        console.log("Password incorrect.");
+        return done(null, false, { message: "Invalid credentials." });
+      }
+
+      console.log("Login successful!");
+      return done(null, user);
+    }
+  )
 );
 
 function signup({ email, password, req }) {
@@ -60,15 +65,24 @@ function signup({ email, password, req }) {
       });
     });
 }
+
 function login({ email, password, req }) {
   return new Promise((resolve, reject) => {
     passport.authenticate("local", (err, user) => {
+      if (err) {
+        return reject(err);
+      }
       if (!user) {
-        reject("Invalid credentials.");
+        return reject(new Error("Invalid credentials."));
       }
 
-      req.login(user, () => resolve(user));
-    })({ body: { email, password, req } });
+      req.login(user, (err) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(user);
+      });
+    })(req);
   });
 }
 
